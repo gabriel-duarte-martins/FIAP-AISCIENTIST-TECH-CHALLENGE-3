@@ -1,0 +1,10 @@
+{
+  "project_id": "sharp-gecko-439920-j4",
+  "location": "US",
+  "dataset": "alfabetizacao_gold_ml",
+  "student_gold": "mart_alfabetizacao_aluno",
+  "profile_gold": "mart_modelagem_aluno_perfis_v2",
+  "seed_test": 42,
+  "seed_validation": 43,
+  "bootstrap_repeats": 250
+}

@@ -2,9 +2,10 @@ import argparse
 from pathlib import Path
 from google.cloud import bigquery
 from google.api_core.exceptions import NotFound
+from src.config import CONFIG
 
 BASE_DIR = Path(__file__).resolve().parent
-PROJECT_ID = "sharp-gecko-439920-j4"
+PROJECT_ID = CONFIG['project_id']
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--project", default=None, help="ID do projeto GCP da Fase 2")
