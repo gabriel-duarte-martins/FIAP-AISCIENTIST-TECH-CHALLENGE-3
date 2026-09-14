@@ -1,0 +1,33 @@
+{
+  "generated_at_utc": "2026-09-14T05:31:31.444096+00:00",
+  "gold_table": "sharp-gecko-439920-j4.alfabetizacao_gold_ml.mart_modelagem_aluno_perfis_v2",
+  "query_jobs": [
+    "1336307a-9a27-4d0e-b00e-ee66146b9e51"
+  ],
+  "query_sha256": "855a89ed2d642549a5da28b297a369c2b93eafeea76bd379c1cfd4bec9c63b7f",
+  "data_sha256": "6ff360f4b7f8d8f1fc90ac4b776e2008f6895b7b7a3eb6884924c923666144af",
+  "profiles": 12989,
+  "students": 1852788,
+  "municipalities": 5517,
+  "weighted_missing": {
+    "taxa_alfabetizacao_municipio_ano_anterior": 0.019204571704911733,
+    "media_portugues_municipio_ano_anterior": 0.019204571704911733,
+    "presenca_municipio_ano_anterior": 0.23173077545839027,
+    "quantidade_alunos_ano_anterior": 0.23173077545839027,
+    "populacao_2022": 0.0,
+    "pib_per_capita_2021": 0.0,
+    "participacao_agro_2021": 0.0,
+    "participacao_industria_2021": 0.0,
+    "participacao_servicos_2021": 0.0,
+    "participacao_publica_2021": 0.0,
+    "codigo_uf": 0.0,
+    "rede": 0.0
+  },
+  "years": {
+    "target": 2024,
+    "education_context": 2023,
+    "GDP": 2021,
+    "population": 2022
+  },
+  "note": "Contagens de observações elegíveis, não pesos amostrais do Inep. Séries históricas na versão consultada; vintages não recuperadas."
+}
