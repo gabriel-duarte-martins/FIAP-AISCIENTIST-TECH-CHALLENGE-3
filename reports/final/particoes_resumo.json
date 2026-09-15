@@ -1,0 +1,17 @@
+{
+  "treino": {
+    "perfis": 7828,
+    "alunos": 1131103,
+    "municipios": 3309
+  },
+  "validacao": {
+    "perfis": 2573,
+    "alunos": 390717,
+    "municipios": 1104
+  },
+  "teste": {
+    "perfis": 2588,
+    "alunos": 330968,
+    "municipios": 1104
+  }
+}

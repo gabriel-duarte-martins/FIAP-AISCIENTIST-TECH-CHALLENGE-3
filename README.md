@@ -1,54 +1,117 @@
-# Tech Challenge Fase 3 — risco municipal de não atingir a meta
+# Tech Challenge Fase 3 — Alfabetização no Brasil
 
-Este projeto reutiliza `mart_alfabetizacao_municipio`, a camada Gold do [Tech Challenge Fase 2](https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-2). Cada linha representa **ano, município e rede**. O modelo estima, com indicadores conhecidos no ano `t`, a probabilidade de o município **não atingir a meta de alfabetização em `t+1`**.
+Projeto de Gabriel Duarte Carneiro Martins — RM372453.
 
-**Extensão individual:** `build_student_gold.py` cria, no BigQuery, uma segunda Gold em `alfabetizacao_gold_ml.mart_alfabetizacao_aluno` com uma linha por aluno avaliado em 2024, rótulo `alfabetizado` e contexto municipal de 2023. `train_students.py` treina a partir de contagens agregadas, sem baixar microdados individuais. Resultados em `reports/alunos/metricas.json`. Veja [a arquitetura](docs/arquitetura_gold_fase3.md).
+Classificação supervisionada de alfabetização em 2024 usando contexto educacional anterior, territorial e socioeconômico. A pipeline reutiliza a Gold do [Tech Challenge Fase 2](https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-2) e acrescenta uma Gold individual e outra de perfis ponderados no BigQuery.
 
-## Decisão metodológica
+## Resultado principal
 
-O enunciado da Fase 3 solicita classificação de alfabetização **por aluno**, mas a Gold original da Fase 2 publica apenas agregados municipais. A nova Gold individual resolve o problema do grão, sem publicar IDs de aluno ou escola. Porém, seus atributos individuais prévios são limitados: as previsões refletem principalmente o contexto do município, rede e série. O modelo municipal continua respondendo à pergunta estratégica sobre municípios que podem deixar de atingir metas futuras.
+A regressão logística foi selecionada na validação por Brier score. O teste abrange 330.968 observações de alunos de 1.104 municípios que não aparecem no treino nem na validação.
 
-O modelo não interpreta importância estatística como efeito causal. Variáveis socioeconômicas adicionais não estão presentes na Gold atual; sua inclusão exigirá integração por município e ano com disponibilidade anterior ao período previsto.
+| Métrica de teste | Baseline de prevalência | Modelo com limiar 0,5 | Modelo com limiar 0.38 |
+|---|---:|---:|---:|
+| Acurácia | 61.9% | 65.1% | 58.3% |
+| Acurácia balanceada | 50.0% | 58.1% | 60.5% |
+| Recall de não alfabetização | 0,0% | 28.6% | 69.6% |
+| Precisão de risco | 0,0% | 58.7% | 46.9% |
+| Fração sinalizada | 0,0% | 18.6% | 56.6% |
+| Brier score | 0.237 | 0.220 | 0.220 |
+| ROC-AUC | 0,500 | 0.649 | 0.649 |
 
-## Dados e rótulo
+O limiar menor aumenta o recall, mas também a demanda potencial por acompanhamento. É uma simulação estatística, não uma regra de política pública. O IC 95% municipal para ROC-AUC foi 0.612–0.682. O modelo tem capacidade discriminatória limitada e deve apoiar investigação contextual.
 
-- Fonte: `alfabetizacao_gold.mart_alfabetizacao_municipio` da Fase 2.
-- Grão: `(ano, id_municipio, rede)`; duplicatas nessa chave geram erro.
-- Rótulo: `1` se `taxa_alfabetizacao(t+1) >= meta_alfabetizacao(t+1)`; `0` caso contrário. Linhas sem resultado ou meta futuros são excluídas do treinamento.
-- Atributos: indicadores observados em `t` da própria Gold, rede e UF. IDs são usados apenas para pareamento e relatório. `gap_para_meta`, `atingiu_meta`, rankings, classificações e todos os campos de `t+1` ficam fora dos atributos. Assim, o resultado futuro não vaza para o modelo.
-- Limitação temporal: a Gold exportada contém 2023 e 2024, produzindo somente uma coorte rotulada (atributos de 2023, resultado de 2024). Nesse caso, o script separa municípios inteiros em treino, validação e teste. Isso avalia generalização entre municípios em 2024, **não entre anos**. Com ao menos três coortes rotuladas, a divisão muda automaticamente para temporal.
+## Contexto e objetivo analítico
 
-## Execução
+Gestores precisam identificar contextos de vulnerabilidade educacional e organizar apoio pedagógico. O alvo principal é `alvo_alfabetizado`: 1 significa alfabetizado, 0 não alfabetizado. Para os relatórios de risco, usamos `1 - P(alfabetizado)`. Não é uma avaliação individual diagnóstica: crianças com os mesmos atributos contextuais recebem a mesma probabilidade.
 
-Requer Python 3.12 e acesso à Gold da Fase 2. No VS Code, abra `export_bigquery.py` e clique em **Run Python File**. O script tenta identificar o projeto GCP pelas credenciais configuradas; se encontrar outro projeto ou não identificar nenhum, preencha `PROJECT_ID` no início do arquivo e execute novamente. O Parquet será salvo em `data/`. Depois, abra `train.py` e clique em **Run Python File**. Nenhum dos dois scripts exige argumentos.
+## Base utilizada
 
-Também é possível executar pelo terminal:
+- Origem: [Avaliação da Alfabetização — Base dos Dados](https://basedosdados.org/dataset/073a39d4-89cf-4068-b1e8-34ed0d9c0b72), com 3.867.999 registros de 2023 e 2024.
+- População elegível: 1.852.788 presentes com rótulo válido em 2024, em 5.517 municípios.
+- Gold individual: `alfabetizacao_gold_ml.mart_alfabetizacao_aluno`; não publica IDs de aluno/escola.
+- Gold local de modelagem: 12.989 perfis de atributos e rótulo, com contagem `peso`; representa todos os elegíveis, sem amostragem.
+- Atributos anteriores: alfabetização, português, presença e quantidade de alunos em 2023.
+- Enriquecimento: PIB/composição econômica de 2021 e população de 2022, com cobertura de 100% na base.
+- Metas de 2025 são usadas em cenários estratégicos, fora do classificador individual.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-gcloud auth application-default login
-python export_bigquery.py --project SEU_PROJECT_ID
-python train.py --gold data/mart_alfabetizacao_municipio.parquet
+O contexto municipal veio da Gold da Fase 2 em `us-central1`. Como a origem da Base dos Dados está em `US`, apenas o contexto agregado foi copiado para a Gold de ML em `US`. O tratamento individual acontece no BigQuery.
+
+## Execução no VS Code
+
+O ponto de entrada é `run_project.py`, executável por **Run Python File**, sem argumentos. O `project_id` fica em `config.json`. A verificação automatizada usa `verify_project.py`. Os resultados são gravados em `reports/final/` e os gráficos em `images/`.
+
+## Etapas da modelagem
+
+1. Auditoria de chaves, rótulos, contagens e cardinalidade dos joins.
+2. Partições de municípios disjuntos em aproximadamente 60/20/20; proporções de alunos podem diferir.
+3. EDA do treino: distribuições ponderadas, faltantes e correlações.
+4. Pipeline com mediana e escala ponderadas, log1p, indicadores de ausência e one-hot.
+5. Baseline, regressão logística e HistGradientBoosting; otimização com GroupKFold de três dobras no treino.
+6. Seleção de família e limiar na validação, preservando o teste para avaliação.
+7. Métricas ponderadas, bootstrap por município, calibração, recortes por UF/rede e importância por permutação.
+8. Rankings de risco, agrupamentos territoriais e cenários para metas de 2025.
+
+## Escolha do algoritmo
+
+A regressão logística regularizada teve o menor Brier na validação, com diferença muito pequena para o boosting. A escolha favoreceu o critério declarado antes do teste. Os resultados das configurações estão em `reports/final/busca_hiperparametros.csv`; a comparação das famílias, em `comparacao_validacao.csv`.
+
+## Insights e aplicação prática
+
+A média municipal anterior de português e a UF tiveram maior importância por permutação. As diferenças de recall entre UFs são grandes, portanto uma regra única de risco não tem o mesmo comportamento em todos os territórios. Identificamos três grupos descritivos de municípios por porte e estrutura econômica. Os relatórios apoiam definição de prioridades para investigação, formação docente e apoio pedagógico; associações preditivas não medem efeitos causais.
+
+Para metas futuras, `cenario_metas2025.csv` compara a taxa observada de 2024 com as metas de 2025 sob estabilidade ou aumento de 5/10 pontos percentuais. Isso é análise de cenário, não uma previsão validada de 2025.
+
+## Limitações
+
+- Poucos atributos próprios da criança; previsões essencialmente contextuais.
+- Uma única coorte de modelagem e nenhuma validação temporal.
+- O teste foi consultado na versão inicial do projeto: esta revisão é exploratória, não confirmatória.
+- Séries históricas consultadas na versão atual; datas exatas de disponibilidade dos indicadores educacionais não foram recuperadas.
+- Apenas presentes com rótulo válido; a população não representa automaticamente todas as crianças brasileiras.
+- `peso` é multiplicidade de registros, não peso amostral do Inep.
+- Presença e quantidade anteriores ausentes para 23,17% dos alunos; rede privada com 24 observações, insuficiente para análise própria.
+
+## Evoluções futuras
+
+Adicionar novas coortes, dados prévios da trajetória individual com vínculo e governança adequados, enriquecer o contexto escolar, validar externamente, analisar intervenções com desenhos causais e monitorar calibração e diferenças regionais de erro.
+
+## Organização e entregáveis
+
+```text
+data/                 caches agregados, fora do Git
+notebooks/            roteiro das análises executáveis
+src/
+  preprocessing/      transformação ponderada e partições
+  modeling/           modelos individual e municipal complementar
+  evaluation/         métricas, bootstrap e análises estratégicas
+  visualization/      gráficos
+reports/final/        relatório, métricas, tabelas e linhagem
+images/               11 gráficos em PNG
+models/               pipeline serializada, fora do Git
+docs/                 checklist, decisões, dicionário e arquitetura
+sql/                  consultas da Gold
+tests/                testes do contrato de modelagem
+config.json           projeto GCP e parâmetros
+run_project.py        ponto de entrada principal
+verify_project.py     testes pelo VS Code
 ```
 
-Também é possível fornecer um CSV ou Parquet local por `--gold`. Dados e modelos ficam fora do Git por padrão.
+O modelo municipal inicial (`train.py`) é um experimento complementar preservado no histórico; o ponto de entrada da entrega final é `run_project.py`.
 
-## Pipeline e avaliação
+## Documentação e reprodução
 
-O pré-processamento integra o `Pipeline` do scikit-learn: mediana e escala para numéricos; moda e one-hot para categóricos. A regressão logística usa pesos balanceados e regularização; `C` é escolhido por Brier score na validação. Quando há histórico suficiente, a divisão é cronológica: anos anteriores para treino, penúltima coorte para validação e última para teste. Com a Gold atual, a divisão usa municípios disjuntos em proporção 60/20/20. Após selecionar `C`, treino e validação são reunidos para ajustar o modelo final; o teste é avaliado uma vez. A semente fixa torna a execução replicável.
+- [Checklist do enunciado](docs/CHECKLIST_ENTREGA.md)
+- [Relatório técnico](reports/final/relatorio_tecnico.md)
+- [Decisões e limites metodológicos](docs/DECISOES_METODOLOGICAS.md)
+- [Dicionário da base](docs/DICIONARIO_DADOS.md)
+- `reports/final/execucao.json`: versões e hash dos dados.
+- `requirements-lock.txt`: versões de dependências usadas.
 
-Saídas em `reports/`: `metricas.json` (Brier, PR-AUC, ROC-AUC quando aplicável e precisão/recall/F1), `importancia_variaveis.csv` (permutação no teste), `riscos_teste.csv` e `riscos_proximo_ano.csv`. O último é uma pontuação prospectiva, **sem resultado observado ainda**. `modelo.joblib` contém o pipeline e metadados; carregue somente artefatos gerados por você.
+Os testes verificam isolamento de municípios, exclusão de atributos proibidos, categorias inéditas e equivalência entre perfis ponderados e registros expandidos na regressão logística.
 
-As métricas de teste devem ser comparadas com a taxa-base de não atingimento e analisadas por UF e rede antes de qualquer uso operacional. Probabilidades podem precisar de calibração. A previsão para 2025 é apenas exploratória: o modelo foi treinado com o alvo de 2024 e não usa a meta futura de 2025 como atributo; mudanças nas metas ou no contexto podem alterar o risco real. Um risco alto deve orientar investigação e apoio pedagógico, nunca sanção automática.
+## Evidências de entrega
 
-## Exploração e hipóteses
+- [Relatório Word](reports/final/Relatorio_Tecnico_Fase3.docx)
+- [Verificação da reprodução sem rede](reports/final/verificacao_reproducibilidade.json)
 
-Antes do treino, verificar cobertura anual, ausência de metas, distribuição do rótulo por ano/UF/rede, frequência de valores faltantes e evolução da taxa de alfabetização. Hipóteses a testar: desempenho anterior e proficiência média podem antecipar risco; baixa presença e desigualdade entre redes podem sinalizar vulnerabilidade. Esses são candidatos a associação, não conclusões causais.
-
-## Estado desta entrega
-
-O GitHub da Fase 2 contém código e documentação, mas não inclui o arquivo Gold. A exportação real feita no projeto contém 23.995 linhas de 2023 e 2024; há 5.232 pares rotulados 2023→2024. Para afirmar desempenho prospectivo, será preciso obter histórico adicional e refazer a avaliação temporal.
-
-O enunciado também pede visualizações, documentação técnica, histórico de Git/branches/PRs e vídeo executivo de até 5 minutos. Esses itens dependem dos resultados reais e da entrega final do grupo.
+A base agregada e o modelo serializado ficam no ambiente local e não são publicados no Git. As consultas permitem refazer a coleta com acesso autorizado ao BigQuery.

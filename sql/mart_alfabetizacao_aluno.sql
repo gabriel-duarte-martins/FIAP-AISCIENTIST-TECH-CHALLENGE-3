@@ -13,9 +13,6 @@ WITH alunos_deduplicados AS (
     SAFE_CAST(presenca AS INT64) AS presenca
   FROM `basedosdados.br_inep_avaliacao_alfabetizacao.alunos`
   WHERE ano = 2024
-  QUALIFY ROW_NUMBER() OVER (
-    PARTITION BY ano, id_municipio, id_escola, id_aluno ORDER BY id_aluno
-  ) = 1
 ), alunos_normalizados AS (
   SELECT
     ano, id_municipio, serie, alfabetizado, presenca,

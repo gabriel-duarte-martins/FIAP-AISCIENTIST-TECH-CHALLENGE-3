@@ -1,0 +1,33 @@
+{
+  "executed_at_utc": "2026-09-14T13:12:39.830892+00:00",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.2.2",
+    "numpy": "2.0.2",
+    "scikit-learn": "1.6.1",
+    "pyarrow": "24.0.0",
+    "matplotlib": "3.9.0",
+    "joblib": "1.4.2",
+    "google-cloud-bigquery": "3.42.2"
+  },
+  "data_sha256": "6ff360f4b7f8d8f1fc90ac4b776e2008f6895b7b7a3eb6884924c923666144af",
+  "partitions": {
+    "treino": {
+      "perfis": 7828,
+      "alunos": 1131103,
+      "municipios": 3309
+    },
+    "validacao": {
+      "perfis": 2573,
+      "alunos": 390717,
+      "municipios": 1104
+    },
+    "teste": {
+      "perfis": 2588,
+      "alunos": 330968,
+      "municipios": 1104
+    }
+  },
+  "winner": "logistica",
+  "clusters": 3
+}

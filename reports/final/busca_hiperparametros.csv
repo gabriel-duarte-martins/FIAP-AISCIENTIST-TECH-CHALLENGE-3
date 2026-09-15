@@ -1,0 +1,10 @@
+familia,parametros,cv_brier,cv_std
+baseline,{},0.24160562061153065,0.0011060702997125168
+logistica,"{""C"": 0.0001}",0.22360407562250503,0.0027312108962214868
+logistica,"{""C"": 0.001}",0.22285929217754852,0.002797311388312885
+logistica,"{""C"": 0.01}",0.2228564758046392,0.0027761404644128123
+logistica,"{""C"": 0.1}",0.2228687186043233,0.002782562977974346
+boosting,"{""max_leaf_nodes"": 7, ""l2_regularization"": 10, ""max_iter"": 120, ""learning_rate"": 0.06}",0.22276666590834915,0.0029642575531251443
+boosting,"{""max_leaf_nodes"": 7, ""l2_regularization"": 100, ""max_iter"": 120, ""learning_rate"": 0.06}",0.22272996622777544,0.0029386209259055014
+boosting,"{""max_leaf_nodes"": 15, ""l2_regularization"": 10, ""max_iter"": 120, ""learning_rate"": 0.06}",0.22276863802058133,0.0031186084205080686
+boosting,"{""max_leaf_nodes"": 15, ""l2_regularization"": 100, ""max_iter"": 120, ""learning_rate"": 0.06}",0.22282042741082267,0.0031678749605695677
