@@ -31,9 +31,8 @@ except NotFound as exc:
     raise SystemExit(
         f"O dataset {dataset_id} não existe ou sua conta não tem acesso a ele.\n"
         f"Datasets visíveis em {client.project}: {available}.\n"
-        "Confira se PROJECT_ID aponta para o projeto usado na Fase 2. "
-        "Se estiver correto e a Gold não aparecer, execute novamente a etapa Gold "
-        "da pipeline da Fase 2 antes de exportar."
+        "PROJECT_ID deve apontar para o projeto usado na Fase 2. "
+        "A exportação requer a conclusão anterior da etapa Gold da pipeline da Fase 2."
     ) from exc
 print(f"Lendo {table} na região {dataset.location} ...")
 frame = client.query(
