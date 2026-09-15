@@ -18,7 +18,7 @@ Referência: enunciado [IAST] Tech Challenge Fase 3, páginas 2 a 8. Atualizado 
 | 12 Reprodução | Cache, versões, sementes, hashes e repetição sem rede | execucao.json e verificacao_reproducibilidade.json | Concluído |
 | 13 README | Contexto, base, preparo, algoritmo, métricas, insights, uso, limites, evolução, reprodução e organização | README.md | Concluído |
 | 14 Relatório | Relatório técnico em Markdown, HTML e Word; dicionário e decisões | reports/final e docs | Concluído |
-| 15 Git | Histórico inicial e branch de entrega; publicação e PR | Repositório GitHub e histórico real | Concluído — PR #1 com testes aprovados |
+| 15 Git | Histórico inicial e branch de entrega; publicação e PR | Repositório GitHub e histórico real | Concluído — PR #2 com testes aprovados |
 
 ## Verificação executada
 
@@ -36,4 +36,5 @@ O modelo prevê alfabetização usando principalmente contexto, sem trajetória 
 
 Repositório: https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-3
 
-Pull request: https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-3/pull/1
+Pull request: https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-3/pull/2
+
