@@ -1,0 +1,7 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {"name":"Executar projeto completo","type":"debugpy","request":"launch","program":"${workspaceFolder}/run_project.py","console":"integratedTerminal","justMyCode":true},
+    {"name":"Verificar testes","type":"debugpy","request":"launch","program":"${workspaceFolder}/verify_project.py","console":"integratedTerminal","justMyCode":true}
+  ]
+}

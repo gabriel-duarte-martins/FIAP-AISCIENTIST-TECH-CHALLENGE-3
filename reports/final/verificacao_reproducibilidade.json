@@ -1,0 +1,14 @@
+{
+  "offline": true,
+  "matching_results": true,
+  "before": {
+    "metricas_teste.json": "1ae8bdc545be3234db44f09dffc79245d3bad65be269b9cd3e6fbde0e6eb4bb7",
+    "particoes_municipios.csv": "6ff249bdd22c93a60a5e4428a2bff79dd1696fc081a89e20ce0dab6e5eedba1f",
+    "comparacao_validacao.csv": "4f7a6c4f1cc68c601d59bb4964a5c785163b5b5ac811218fe1a7255e11c4bfd3"
+  },
+  "after": {
+    "metricas_teste.json": "1ae8bdc545be3234db44f09dffc79245d3bad65be269b9cd3e6fbde0e6eb4bb7",
+    "particoes_municipios.csv": "6ff249bdd22c93a60a5e4428a2bff79dd1696fc081a89e20ce0dab6e5eedba1f",
+    "comparacao_validacao.csv": "4f7a6c4f1cc68c601d59bb4964a5c785163b5b5ac811218fe1a7255e11c4bfd3"
+  }
+}

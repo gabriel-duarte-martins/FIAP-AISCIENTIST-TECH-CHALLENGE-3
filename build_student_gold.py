@@ -8,9 +8,10 @@ from pathlib import Path
 import pandas as pd
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
+from src.config import CONFIG
 
 BASE_DIR = Path(__file__).resolve().parent
-PROJECT_ID = "sharp-gecko-439920-j4"
+PROJECT_ID = CONFIG['project_id']
 DATASET_ID = "alfabetizacao_gold_ml"
 LOCATION = "US"
 MUNICIPAL_PARQUET = BASE_DIR / "data" / "mart_alfabetizacao_municipio.parquet"
@@ -27,7 +28,15 @@ def main() -> None:
     except NotFound:
         pass
     else:
-        raise SystemExit(f"A tabela {DEST} já existe. Nenhum dado foi substituído.")
+        print(f"A tabela {DEST} já existe. Nenhum dado foi substituído.")
+        return
+
+    duplicates = client.query('''SELECT COUNT(*) AS n FROM (
+        SELECT 1 FROM `basedosdados.br_inep_avaliacao_alfabetizacao.alunos`
+        WHERE ano=2024 GROUP BY ano,id_municipio,id_escola,id_aluno HAVING COUNT(*)>1
+    )''').result()
+    if next(iter(duplicates))['n']:
+        raise ValueError('A fonte contém chaves duplicadas. Resolva os conflitos antes de criar a Gold.')
 
     frame = pd.read_parquet(MUNICIPAL_PARQUET)
     frame = frame.loc[frame["ano"].eq(2023), [
@@ -51,8 +60,13 @@ def main() -> None:
     dataset.location = LOCATION
     client.create_dataset(dataset, exists_ok=True)
     print(f"Enviando {len(frame)} linhas agregadas de 2023 para {CONTEXT} ...")
-    job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE")
-    client.load_table_from_dataframe(frame, CONTEXT, job_config=job_config, location=LOCATION).result()
+    try:
+        client.get_table(CONTEXT)
+    except NotFound:
+        job_config = bigquery.LoadJobConfig(write_disposition="WRITE_EMPTY")
+        client.load_table_from_dataframe(frame, CONTEXT, job_config=job_config, location=LOCATION).result()
+    else:
+        print('Reutilizando contexto municipal já materializado.')
 
     sql = (BASE_DIR / "sql" / "mart_alfabetizacao_aluno.sql").read_text(encoding="utf-8")
     sql = sql.replace("PROJECT_ID", PROJECT_ID)

@@ -1,0 +1,108 @@
+{
+  "source_years": [
+    {
+      "ano": 2023,
+      "n": 1747439,
+      "validos": 1503058,
+      "ids_nulos": 0
+    },
+    {
+      "ano": 2024,
+      "n": 2120560,
+      "validos": 1852788,
+      "ids_nulos": 0
+    }
+  ],
+  "duplicates_2024": [
+    {
+      "chaves_duplicadas": 0,
+      "linhas_extras": null,
+      "conflitos": 0
+    }
+  ],
+  "pib_description": [
+    {
+      "column": "id_municipio",
+      "description": "ID Município - IBGE 7 Dígitos"
+    },
+    {
+      "column": "ano",
+      "description": "Ano"
+    },
+    {
+      "column": "pib",
+      "description": "Produto Interno Bruto a preços correntes"
+    },
+    {
+      "column": "impostos_liquidos",
+      "description": "Impostos, líquidos de subsídios, sobre produtos a preços correntes"
+    },
+    {
+      "column": "va",
+      "description": "Valor adicionado bruto a preços correntes total"
+    },
+    {
+      "column": "va_agropecuaria",
+      "description": "Valor adicionado bruto a preços correntes da agropecuária"
+    },
+    {
+      "column": "va_industria",
+      "description": "Valor adicionado bruto a preços correntes da indústria"
+    },
+    {
+      "column": "va_servicos",
+      "description": "Valor adicionado bruto a preços correntes dos serviços, exclusive administração, defesa, educação e saúde públicas e seguridade social"
+    },
+    {
+      "column": "va_adespss",
+      "description": "Valor adicionado bruto a preços correntes da administração, defesa, educação e saúde públicas e seguridade social"
+    }
+  ],
+  "population_years": [
+    {
+      "ano": 2021,
+      "n": 5570
+    },
+    {
+      "ano": 2022,
+      "n": 5570
+    },
+    {
+      "ano": 2023,
+      "n": 5570
+    }
+  ],
+  "pib_sample": [
+    {
+      "id_municipio": "3550308",
+      "ano": 2021,
+      "pib": 828980747000,
+      "impostos_liquidos": 168184034000,
+      "va": 660796712000,
+      "va_agropecuaria": 61625000,
+      "va_industria": 62513858000,
+      "va_servicos": 549767525000,
+      "va_adespss": 48453705000
+    }
+  ],
+  "gold_distribution": [
+    {
+      "ano": 2024,
+      "rede": "Privada",
+      "serie": "2",
+      "n": 24
+    },
+    {
+      "ano": 2024,
+      "rede": "Municipal",
+      "serie": "2",
+      "n": 1611591
+    },
+    {
+      "ano": 2024,
+      "rede": "Estadual",
+      "serie": "2",
+      "n": 241173
+    }
+  ]
+}

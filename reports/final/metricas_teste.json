@@ -1,0 +1,93 @@
+{
+  "alunos": 330968,
+  "prevalencia_nao_alfabetizado": 0.3814870319789224,
+  "accuracy": 0.5834189408039447,
+  "balanced_accuracy": 0.6050209549077538,
+  "brier": 0.2202809577151541,
+  "roc_auc": 0.6487759728150455,
+  "average_precision_risco": 0.5208950151090108,
+  "precision_risco": 0.4690116269762925,
+  "recall_risco": 0.6961587201013781,
+  "f1_risco": 0.5604442899999681,
+  "fracao_sinalizada": 0.566245075052573,
+  "limiar_risco": 0.3799999999999999,
+  "confusion_risco": [
+    [
+      105196,
+      99512
+    ],
+    [
+      38363,
+      87897
+    ]
+  ],
+  "modelo": "logistica",
+  "avaliacao": "municipios_disjuntos_2024",
+  "observacao": "Revisão exploratória; teste já foi consultado na versão inicial do projeto.",
+  "intervalo95_bootstrap_municipios": {
+    "roc_auc": {
+      "low": 0.6117554238182977,
+      "high": 0.6824007589377593
+    },
+    "brier": {
+      "low": 0.2127095981484307,
+      "high": 0.22657331468886172
+    },
+    "recall_risco": {
+      "low": 0.6052506716082463,
+      "high": 0.7761402258736064
+    },
+    "balanced_accuracy": {
+      "low": 0.5755447692525869,
+      "high": 0.6338097400965268
+    }
+  },
+  "baseline": {
+    "alunos": 330968,
+    "prevalencia_nao_alfabetizado": 0.3814870319789224,
+    "accuracy": 0.6185129680210776,
+    "balanced_accuracy": 0.5,
+    "brier": 0.23669952053451856,
+    "roc_auc": 0.5,
+    "average_precision_risco": 0.3814870319789224,
+    "precision_risco": 0.0,
+    "recall_risco": 0.0,
+    "f1_risco": 0.0,
+    "fracao_sinalizada": 0.0,
+    "limiar_risco": 0.5,
+    "confusion_risco": [
+      [
+        204708,
+        0
+      ],
+      [
+        126260,
+        0
+      ]
+    ]
+  },
+  "limiar_05": {
+    "alunos": 330968,
+    "prevalencia_nao_alfabetizado": 0.3814870319789224,
+    "accuracy": 0.650978342317082,
+    "balanced_accuracy": 0.5810748254735514,
+    "brier": 0.2202809577151541,
+    "roc_auc": 0.6487759728150455,
+    "average_precision_risco": 0.5208950151090108,
+    "precision_risco": 0.5873364220108916,
+    "recall_risco": 0.2861555520354823,
+    "f1_risco": 0.3848222606843297,
+    "fracao_sinalizada": 0.18586389016460805,
+    "limiar_risco": 0.5,
+    "confusion_risco": [
+      [
+        179323,
+        25385
+      ],
+      [
+        90130,
+        36130
+      ]
+    ]
+  }
+}

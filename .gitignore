@@ -1,9 +1,17 @@
 data/*
 !data/.gitkeep
-reports/*
-!reports/.gitkeep
+reports/*.joblib
+reports/alunos/
 models/*
 !models/.gitkeep
 __pycache__/
 .venv/
 .env
+*.parquet
+*.joblib
+*.zip
+.pytest_cache/
+
+# Experimentos municipais locais anteriores à entrega final
+reports/*.csv
+reports/metricas.json

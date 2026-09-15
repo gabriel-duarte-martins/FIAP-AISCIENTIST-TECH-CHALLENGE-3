@@ -9,7 +9,7 @@ A Base dos Dados informa cobertura 2023–2024 para a Avaliação da Alfabetiza�
 ```mermaid
 flowchart LR
   A[BD alunos 2023/2024] --> B[Bronze restrita: projeção mínima]
-  B --> C[Silver individual: tipos, deduplicação, qualidade]
+  B --> C[Silver individual: tipos e qualidade]
   C --> D[Gold individual: alvo + atributos prévios]
   M[Gold municipal existente] -->|ano anterior| D
   D --> E[Pipeline ML por aluno]
@@ -17,7 +17,7 @@ flowchart LR
 ```
 
 1. **Bronze individual restrita:** os microdados permanecem na tabela de origem do BigQuery, em `US`; não são copiados para Parquet local, GCS ou Git.
-2. **Silver individual lógica:** a consulta SQL normaliza ano, município, rede, série, presença e `alfabetizado` e deduplica pela chave original em CTE. Evita extrair milhões de linhas em Pandas.
+2. **Silver individual lógica:** a consulta SQL normaliza ano, município, rede, série, presença e `alfabetizado` e bloqueia a execução se a auditoria detectar duplicação da chave original. Evita extrair milhões de linhas em Pandas.
 3. **Gold individual:** uma linha por aluno presente e com rótulo válido em 2024. Atributos permitidos: contexto territorial, rede, série e indicadores **municipais de 2023**. `alfabetizado` é o alvo. A tabela `sharp-gecko-439920-j4.alfabetizacao_gold_ml.mart_alfabetizacao_aluno` está em `US` e não publica identificadores de aluno ou escola.
 4. **Gold municipal:** manter os quatro marts da Fase 2. O modelo já criado continua respondendo ao risco de município não atingir meta.
 
@@ -29,8 +29,12 @@ flowchart LR
 - Há poucos atributos próprios do aluno que sejam conhecidos antes da avaliação. As previsões tenderão a ser **risco contextual**, parecido entre alunos do mesmo município/rede/série. Para um modelo verdadeiramente individual, incorporar dados educacionais prévios por aluno exigiria uma fonte longitudinal com vínculo confiável, autorização e governança de privacidade.
 - A origem da Base dos Dados está em `US`, enquanto a Gold municipal da Fase 2 está em `us-central1`. Para evitar cruzamento entre regiões, apenas 11.547 linhas **agregadas** do contexto municipal de 2023 foram carregadas para `US`. O script `build_student_gold.py` não substitui a Gold individual se ela já existir.
 
-## Próxima implementação
+## Implementação concluída
 
-A Gold individual foi materializada e validada: 1.852.788 linhas, das quais 1.817.206 têm contexto municipal anterior; 1.107.119 têm rótulo alfabetizado e 745.669 não alfabetizado. `train_students.py` consulta apenas 12.989 grupos de atributos e rótulo, pondera cada grupo pela contagem de alunos e divide municípios entre treino, validação e teste. O modelo municipal atual não deve ser apresentado como se resolvesse o alvo individual do enunciado.
+A Gold individual contém 1.852.788 observações elegíveis de 2024, sem identificadores individuais publicados. A tabela `mart_modelagem_aluno_perfis_v2` integra PIB/composição econômica de 2021 e população de 2022, formando 12.989 perfis de atributos e rótulo. A contagem `peso` preserva todos os alunos elegíveis; não é peso amostral do Inep. A tabela de perfis, a Gold individual e o contexto municipal de 2023 estão em `US`.
 
-O modelo individual contextual obteve ROC-AUC 0,643 e acurácia 0,615 no teste de 330.968 alunos de municípios não vistos. A classe majoritária no teste corresponde a 61,9% dos alunos, portanto a acurácia do modelo não supera esse baseline. O Brier score foi 0,221. Isso mostra que a base agora atende ao **grão** individual, mas os atributos disponíveis antes da avaliação ainda são insuficientes para uma previsão individual forte.
+`prepare_data.py` prepara o cache, e `run_project.py` executa EDA, pré-processamento integrado, comparação de modelos, validação por município, interpretação e análises estratégicas. Ambos funcionam com Run Python File no VS Code.
+
+A entrega final selecionou regressão logística na validação. No teste de 330.968 observações, ROC-AUC 0,649 e Brier 0,220; no limiar 0,5 a acurácia é 65,1%, contra 61,9% do baseline. O limiar de risco 0,38 escolhido na validação aumenta o recall para 69,6%, com precisão de 46,9% e acurácia de 58,3%. Resultados antigos do modelo municipal não substituem essas métricas.
+
+O desenho mede transferência entre municípios de 2024 e permanece exploratório. Os cenários para metas de 2025 são comparações condicionais com o resultado observado de 2024, sem previsão temporal validada. Os valores históricos estão na versão atualmente consultada das fontes; datas exatas de publicação dos indicadores educacionais não foram recuperadas.

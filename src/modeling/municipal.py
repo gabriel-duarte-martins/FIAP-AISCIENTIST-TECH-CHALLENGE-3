@@ -1,4 +1,4 @@
-"""Previsão municipal do atingimento da meta no ano seguinte.
+"""Modelo municipal inicial, mantido como análise complementar.
 
 A Gold da Fase 2 é agregada: este módulo NÃO prevê alfabetização individual.
 """

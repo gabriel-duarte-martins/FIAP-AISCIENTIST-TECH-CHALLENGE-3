@@ -1,34 +1,39 @@
-# Checklist de execução — Tech Challenge Fase 3
+# Checklist da entrega do Tech Challenge Fase 3
 
-Referência: enunciado [IAST] — Tech Challenge — Fase 3, páginas 2–8.
-Este checklist descreve requisitos acadêmicos; publicação e gravação serão registradas pelo estado real, sem evidências fabricadas.
+Referência: enunciado [IAST] Tech Challenge Fase 3, páginas 2 a 8. Atualizado em 14/09/2026. Os resultados são de uma execução real com os dados descritos abaixo.
 
-| Etapa | O que fazer | Evidência esperada | Estado inicial |
+| Etapa | Atendimento | Evidência | Situação |
 |---|---|---|---|
-| 1. Problema (p. 2) | Definir classificação de alfabetização por aluno e população elegível | Objetivo, alvo e instante de predição | Base inicial criada |
-| 2. Gold (p. 2–4) | Reutilizar Fase 2 e rastrear integração individual | SQL, linhagem, qualidade, cobertura | Revisar |
-| 3. Enriquecimento (p. 3–4) | Integrar contexto socioeconômico/populacional disponível antes de 2024 | Fonte, ano, dicionário, cobertura | Fazer |
-| 4. EDA (p. 3–4) | Distribuições, faltantes, padrões territoriais, correlações e hipóteses | Tabelas e gráficos; decisões fundamentadas | Fazer |
-| 5. Preparação (p. 3 e 5) | Imputação, transformações e encoding dentro da pipeline | Código reutilizável e testes de proteção | Revisar |
-| 6. Leakage (p. 3 e 5) | Excluir proficiência contemporânea e separar municípios | Lista permitida, contrato temporal, partições | Revisar |
-| 7. Modelos (p. 5) | Baseline, regressão logística e alternativa não linear | Comparação por validação, seleção de parâmetros | Fazer |
-| 8. Avaliação (p. 3 e 5) | Métricas, incerteza por município, erro por UF/rede, calibração | JSON, CSV, gráficos, limites da generalização | Fazer |
-| 9. Interpretação (p. 5) | Importância de variáveis e associação sem inferência causal | Importância por permutação e discussão | Fazer |
-| 10. Negócio (p. 5) | Responder às cinco perguntas estratégicas | Relatório, grupos de municípios e ranking de risco | Fazer |
-| 11. Organização (p. 6) | data, notebooks, src/preprocessing/modeling/evaluation/visualization, reports, images | Estrutura e execução pelo VS Code | Fazer |
-| 12. Reprodutibilidade (p. 6–7) | Configuração, ambiente, cache, versões, semente, hashes | Executar análise sem novas consultas | Fazer |
-| 13. README (p. 7) | Todos os onze tópicos pedidos | README final orientado ao alvo individual | Reescrever |
-| 14. Documentação (p. 7) | Relatório técnico, dicionário e decisões | Artefatos rastreáveis e resultados reais | Fazer |
-| 15. Git (p. 6–7) | Histórico real, branches e PR | Commits reais; PR apenas se publicado | Verificar repositório |
-| 16. Vídeo (p. 7–8) | Preparar fala executiva de até 5 minutos | Roteiro e material visual; gravação pelo grupo | Preparar roteiro |
+| 1 Problema e alvo | Alfabetização por aluno elegível em 2024; finalidade contextual | README e relatório técnico | Concluído |
+| 2 Gold da Fase 2 | Contexto de 2023 integrado à Gold individual; grão e regiões rastreados | SQL, arquitetura e linhagem_dados.json | Concluído |
+| 3 Enriquecimento | PIB/composição 2021 e população 2022; cobertura 100% | perfis_enriquecidos.sql e dicionário | Concluído |
+| 4 EDA | Distribuições, faltantes, correlações, hipóteses e decisões no treino | images/01 a 04 e CSVs exploratórios | Concluído |
+| 5 Preparação | Imputação ponderada, log1p, escala, indicadores de ausência e one-hot integrados | src/preprocessing | Concluído |
+| 6 Vazamento | Proficiência contemporânea excluída; municípios disjuntos; ajuste só no treino | Lista permitida, partições e testes | Concluído |
+| 7 Modelagem | Baseline, logística e boosting; busca em três dobras por município | busca_hiperparametros.csv e comparacao_validacao.csv | Concluído |
+| 8 Avaliação | Métricas, limiares, bootstrap municipal, calibração e recortes UF/rede | metricas_teste.json e images/05 a 09 | Concluído |
+| 9 Explicabilidade | Importância por permutação contextual; associação sem causalidade | importancia_permutacao.csv | Concluído |
+| 10 Negócio | Cinco perguntas; risco, grupos semelhantes e cenários de metas | Relatório, rankings, clusters e cenários | Concluído com limites explícitos |
+| 11 Organização | data, notebooks, módulos src, reports, images e configuração | Estrutura do repositório | Concluído |
+| 12 Reprodução | Cache, versões, sementes, hashes e repetição sem rede | execucao.json e verificacao_reproducibilidade.json | Concluído |
+| 13 README | Contexto, base, preparo, algoritmo, métricas, insights, uso, limites, evolução, reprodução e organização | README.md | Concluído |
+| 14 Relatório | Relatório técnico em Markdown, HTML e Word; dicionário e decisões | reports/final e docs | Concluído |
+| 15 Git | Histórico inicial e branch de entrega; publicação e PR | Repositório GitHub e histórico real | Concluído — PR #1 com testes aprovados |
 
-## Critérios de aceite
+## Verificação executada
 
-- Resultados produzidos pela execução real e ligados à versão da base.
-- Nenhuma variável calculada com o resultado de 2024 entra como atributo do alvo de 2024.
-- Municípios disjuntos entre treino, validação e teste; limiar escolhido sem usar teste.
-- Métricas ponderadas pela contagem de alunos; contagem não é peso amostral do Inep.
-- Desempenho comparado a um baseline aprendido no treino.
-- Associações e limitações contextual, temporal e territorial explicitadas.
-- Scripts executáveis por Run Python File, sem argumentos obrigatórios.
-- Itens dependentes da conta GitHub ou da gravação do grupo não marcados como concluídos antes da execução.
+- A fonte original tem 3.867.999 registros em 2023 e 2024; a Gold usada representa 1.852.788 elegíveis de 2024.
+- Não há municípios compartilhados entre treino, validação e teste.
+- Os quatro testes do contrato passaram, incluindo equivalência da logística ponderada com dados expandidos em um caso controlado.
+- A repetição completa com a conexão de rede bloqueada reproduziu exatamente os hashes das métricas, partições e comparação de modelos.
+- Os 11 gráficos foram conferidos visualmente. O relatório Word foi renderizado para conferência de todas as páginas.
+
+## Limites que não devem ser ocultados na apresentação
+
+O modelo prevê alfabetização usando principalmente contexto, sem trajetória individual anterior. Não há validação temporal. O teste foi consultado na versão inicial e esta revisão é exploratória. A fonte histórica foi consultada na versão atual, sem reconstrução completa da disponibilidade original. As metas de 2025 entram somente em cenários. A importância das variáveis não identifica causas.
+
+## Publicação
+
+Repositório: https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-3
+
+Pull request: https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-3/pull/1
