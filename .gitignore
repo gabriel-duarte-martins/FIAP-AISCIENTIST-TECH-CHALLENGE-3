@@ -1,0 +1,9 @@
+data/*
+!data/.gitkeep
+reports/*
+!reports/.gitkeep
+models/*
+!models/.gitkeep
+__pycache__/
+.venv/
+.env
