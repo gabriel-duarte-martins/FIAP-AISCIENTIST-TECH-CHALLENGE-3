@@ -1,5 +1,7 @@
 # Tech Challenge Fase 3 — risco municipal de não atingir a meta
 
+# LINK APRESENTAÇÃO: https://youtu.be/F_dP4MO3uf8
+
 Este projeto reutiliza `mart_alfabetizacao_municipio`, a camada Gold do [Tech Challenge Fase 2](https://github.com/gabriel-duarte-martins/FIAP-AISCIENTIST-TECH-CHALLENGE-2). Cada linha representa **ano, município e rede**. O modelo estima, com indicadores conhecidos no ano `t`, a probabilidade de o município **não atingir a meta de alfabetização em `t+1`**.
 
 **Extensão individual:** `build_student_gold.py` cria, no BigQuery, uma segunda Gold em `alfabetizacao_gold_ml.mart_alfabetizacao_aluno` com uma linha por aluno avaliado em 2024, rótulo `alfabetizado` e contexto municipal de 2023. `train_students.py` treina a partir de contagens agregadas, sem baixar microdados individuais. Resultados em `reports/alunos/metricas.json`. Veja [a arquitetura](docs/arquitetura_gold_fase3.md).
